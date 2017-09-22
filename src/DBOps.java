@@ -89,20 +89,29 @@ public class DBOps{
             System.exit(0);
         }
     }
-   /* public Recipe searchRecipes(String recipe_name) {
+    public void searchRecipes(String recipe_name) {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/recipe", "kvansylyvong", "password");
             Statement stmt = c.createStatement();
-            String prepQuery = "select *, steps.step_text from recipes where title like ?";
-            PreparedStatement findRecipe = c.prepareStatement(prepQuery);
-            findRecipe.setString(2,"%" + recipe_name + "&");
-            ResultSet rs = findRecipe.executeQuery();
+            String prepQuery = "select r.id, s.recipe as step_fk, i.recipe as ing_fk, r.title, a.first_name, a.last_name, group_concat(distinct s.step_text order by s.step_order asc SEPARATOR '|') as steps, group_concat(distinct i.ingredient_text SEPARATOR '|') as ingredients " +
+                    "from recipes as r inner join authors as a " +
+                    "on r.author_fk = a.id  " +
+                    "left join ingredients as i " +
+                    "on r.id = i.recipe  " +
+                    "right join steps as s on s.recipe = r.id  " +
+                    "where title like ? " +
+                    "group by r.id;";
 
+            PreparedStatement findRecipe = c.prepareStatement(prepQuery);
+            findRecipe.setString(1,"%" + recipe_name + "%");
+            ResultSet rs = findRecipe.executeQuery();
+            while (rs.next()) {
+               System.out.println("Title: " + rs.getString("title"));
+            }
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-        return Recipe;
-    } */
+    }
 }

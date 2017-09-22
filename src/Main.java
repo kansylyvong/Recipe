@@ -37,6 +37,6 @@ public class Main {
             System.out.print(ingredient + " ");
         } */
         DBOps sample = new DBOps();
-        sample.insertRecipe(clientRecipe);
+        sample.searchRecipes("chicken");
     }
 }
