@@ -16,7 +16,7 @@ public class Main {
         catList.add("rcat2");
         catList.add("rcat3");
         catList.add("rcat4");
-        Recipe clientRecipe = new Recipe("thomas", "keller", "Chocolate cake", ingList, stepList, "hard", 20, 15, 70, 4, catList);
+        Recipe clientRecipe = new Recipe("thomas", "keller", "Chocolate cake", ingList, stepList, "hard", 20, 15, 70, 4 /*, catList */);
 
         /*String author = clientRecipe.getAuthor();
         String title = clientRecipe.getTitle();
@@ -37,6 +37,10 @@ public class Main {
             System.out.print(ingredient + " ");
         } */
         DBOps sample = new DBOps();
-        sample.searchRecipes("chicken");
+        ArrayList<Recipe> recipes = sample.searchRecipes("1");
+
+        for (Recipe recipe: recipes) {
+            System.out.println("Recipe title: " + recipe.getTitle());
+        }
     }
 }

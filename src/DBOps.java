@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DBOps{
     public void insert(Recipe recipe, Connection c, Integer id) {
@@ -89,29 +90,50 @@ public class DBOps{
             System.exit(0);
         }
     }
-    public void searchRecipes(String recipe_name) {
+    public ArrayList<Recipe> searchRecipes(String recipe_name) {
+        String first_name, last_name, title, difficulty;
+        int inactiveTime, prepTime, cookTime, totalTime, yield;
+        ArrayList<String> steps;
+        ArrayList<String> ingredients;
+        ArrayList<Recipe> recipes = new ArrayList<Recipe>();
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/recipe", "kvansylyvong", "password");
             Statement stmt = c.createStatement();
-            String prepQuery = "select r.id, s.recipe as step_fk, i.recipe as ing_fk, r.title, a.first_name, a.last_name, group_concat(distinct s.step_text order by s.step_order asc SEPARATOR '|') as steps, group_concat(distinct i.ingredient_text SEPARATOR '|') as ingredients " +
+            String prepQuery = "select r.*, s.recipe as step_fk, i.recipe as ing_fk, r.title, a.first_name, a.last_name, group_concat(distinct s.step_text order by s.step_order asc SEPARATOR '|') as steps, group_concat(distinct i.ingredient_text SEPARATOR '|') as ingredients " +
                     "from recipes as r inner join authors as a " +
                     "on r.author_fk = a.id  " +
                     "left join ingredients as i " +
                     "on r.id = i.recipe  " +
                     "right join steps as s on s.recipe = r.id  " +
-                    "where title like ? " +
+                    "where title like ? or step_text like ? " +
                     "group by r.id;";
 
             PreparedStatement findRecipe = c.prepareStatement(prepQuery);
             findRecipe.setString(1,"%" + recipe_name + "%");
+            findRecipe.setString(2,"%" + recipe_name + "%");
             ResultSet rs = findRecipe.executeQuery();
             while (rs.next()) {
-               System.out.println("Title: " + rs.getString("title"));
+                first_name = rs.getString("first_name");
+                last_name = rs.getString("last_name");
+                title = rs.getString("title");
+                difficulty = rs.getString("difficulty");
+                inactiveTime = rs.getInt("inactive_time");
+                prepTime = rs.getInt("prep_time");
+                cookTime = rs.getInt("cook_time");
+                totalTime = rs.getInt("total_time");
+                yield = rs.getInt("yield");
+                steps = new ArrayList<>(Arrays.asList(rs.getString("steps").split("|")));
+                ingredients = new ArrayList<>(Arrays.asList(rs.getString("ingredients").split("|")));
+
+                Recipe recipe = new Recipe(first_name, last_name, title, ingredients, steps, difficulty, prepTime, inactiveTime, cookTime, yield);
+                recipes.add(recipe);
+
             }
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
+        return recipes;
     }
 }

@@ -17,7 +17,7 @@ public class Recipe {
     protected int yield;
     protected ArrayList<String> categories;
     protected ArrayList<String> comments;
-    public Recipe(String author_first, String author_last, String title, ArrayList<String> ingredients, ArrayList<String> steps, String difficulty, int prepTime, int inactiveTime, int cookTime, int yield, ArrayList<String> categories) {
+    public Recipe(String author_first, String author_last, String title, ArrayList<String> ingredients, ArrayList<String> steps, String difficulty, int prepTime, int inactiveTime, int cookTime, int yield /*, ArrayList<String> categories */) {
         super();
         this.authorFirstName = author_first;
         this.authorLastName = author_last;
