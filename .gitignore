@@ -2,13 +2,13 @@
 out/
 *.class
 
-select r.id, s.recipe as step_fk, i.recipe as ing_fk, r.title, a.first_name, a.last_name, group_concat(distinct s.step_text order by s.step_order asc SEPARATOR '|') as steps, group_concat(distinct i.ingredient_text SEPARATOR '|') as ingredients
+select r.*, s.recipe as step_fk, i.recipe as ing_fk, r.title, a.first_name, a.last_name, a.id, group_concat(distinct concat(s.step_id, ">", s.step_text) order by s.step_order asc SEPARATOR '|') as steps, group_concat(distinct concat(i.ingredient_id, ">", i.ingredient_text) SEPARATOR '|') as ingredients, s.step_id, i.ingredient_id
 from recipes as r inner join
 authors as a on r.author_fk = a.id
 left join ingredients as i on r.id = i.recipe
 right join steps as s on s.recipe = r.id
-where title like '%chicken%'
-group by r.id;
+where title like '%1%' or step_text like '%1%'
+group by r.id\G
 
 select r.id, s.recipe as step_fk, i.recipe as ing_fk, group_concat( distinct r.title), a.first_name, a.last_name, s.step_text, i.ingredient_text
 from recipes as r inner join

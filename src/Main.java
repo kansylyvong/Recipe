@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.*;
 
 public class Main {
     public static void main (String [] args) {
@@ -39,8 +40,12 @@ public class Main {
         DBOps sample = new DBOps();
         ArrayList<Recipe> recipes = sample.searchRecipes("1");
 
-        for (Recipe recipe: recipes) {
-            System.out.println("Recipe title: " + recipe.getTitle());
-        }
+
+       for (Recipe recipe: recipes) {
+            //System.out.println("Recipe title: " + recipe.getTitle());
+            //ArrayList<String> steps = recipe.getSteps();
+            //System.out.print(" Steps:");
+           System.out.println(recipe.getSteps());
+       }
     }
 }

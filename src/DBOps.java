@@ -1,6 +1,6 @@
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
+
 
 public class DBOps{
     public void insert(Recipe recipe, Connection c, Integer id) {
@@ -95,12 +95,15 @@ public class DBOps{
         int inactiveTime, prepTime, cookTime, totalTime, yield;
         ArrayList<String> steps;
         ArrayList<String> ingredients;
+        HashMap<Integer, String> stepsList;
+        HashMap<Integer, String> ingredientList;
         ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/recipe", "kvansylyvong", "password");
             Statement stmt = c.createStatement();
-            String prepQuery = "select r.*, s.recipe as step_fk, i.recipe as ing_fk, r.title, a.first_name, a.last_name, group_concat(distinct s.step_text order by s.step_order asc SEPARATOR '|') as steps, group_concat(distinct i.ingredient_text SEPARATOR '|') as ingredients " +
+            String prepQuery = "select r.*, s.recipe as step_fk, i.recipe as ing_fk, r.title, a.first_name, a.last_name, a.id, group_concat(concat(s.step_id, \">\", s.step_text) order by s.step_order asc SEPARATOR '|') as steps, group_concat(distinct concat(i.ingredient_id, \">\", i.ingredient_text) SEPARATOR '|') as ingredients, s.step_id, i.ingredient_id " +
                     "from recipes as r inner join authors as a " +
                     "on r.author_fk = a.id  " +
                     "left join ingredients as i " +
@@ -123,10 +126,12 @@ public class DBOps{
                 cookTime = rs.getInt("cook_time");
                 totalTime = rs.getInt("total_time");
                 yield = rs.getInt("yield");
-                steps = new ArrayList<>(Arrays.asList(rs.getString("steps").split("|")));
+                steps = new ArrayList<>(Arrays.asList(rs.getString("steps").split("\\|")));
                 ingredients = new ArrayList<>(Arrays.asList(rs.getString("ingredients").split("|")));
 
                 Recipe recipe = new Recipe(first_name, last_name, title, ingredients, steps, difficulty, prepTime, inactiveTime, cookTime, yield);
+                recipe.setRecipeId(rs.getInt("id"));
+                recipe.setAuthorId(rs.getInt("author_fk"));
                 recipes.add(recipe);
 
             }
@@ -135,5 +140,17 @@ public class DBOps{
             System.exit(0);
         }
         return recipes;
+    }
+    public void udpateRecipeIngredient(Recipe recipe) {
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/recipe", "kvansylyvong", "password");
+            Statement stmt = c.createStatement();
+            String prepUpdate = "update ingredients set ingredient_text = ? where  ";
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
     }
 }
