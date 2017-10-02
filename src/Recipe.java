@@ -19,8 +19,8 @@ public class Recipe {
     private int authorId;
     protected ArrayList<String> categories;
     protected ArrayList<String> comments;
-    protected HashMap<Integer, String> returnedSteps;
-    protected HashMap<Integer, String> returnedIngredients;
+    protected HashMap<Integer, String> returnedSteps = new HashMap<>();
+    protected HashMap<Integer, String> returnedIngredients = new HashMap<>();
 
     public Recipe(String author_first, String author_last, String title, ArrayList<String> ingredients, ArrayList<String> steps, String difficulty, int prepTime, int inactiveTime, int cookTime, int yield /*, ArrayList<String> categories */) {
         super();
@@ -117,9 +117,9 @@ public class Recipe {
         this.authorId = id;
     }
     public void addReturnedStep(Integer key, String value) {
-        returnedSteps.put(key, value);
+        this.returnedSteps.put(key, value);
     }
     public void addReturnedIngredients(Integer key, String value) {
-        returnedIngredients.put(key, value);
+        this.returnedIngredients.put(key, value);
     }
 }

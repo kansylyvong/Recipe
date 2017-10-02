@@ -39,13 +39,16 @@ public class Main {
         } */
         DBOps sample = new DBOps();
         ArrayList<Recipe> recipes = sample.searchRecipes("1");
+        HashMap<Integer, String> steps = new HashMap<>();
 
-
-       for (Recipe recipe: recipes) {
-            //System.out.println("Recipe title: " + recipe.getTitle());
-            //ArrayList<String> steps = recipe.getSteps();
-            //System.out.print(" Steps:");
-           System.out.println(recipe.getSteps());
+      for (Recipe recipe: recipes) {
+            System.out.println("Recipe title: " + recipe.getTitle());
+            steps = recipe.getReturnedSteps();
+            for (HashMap.Entry<Integer, String> step: steps.entrySet()) {
+                System.out.print("Step: ");
+                System.out.print(step.getValue() + " ");
+            }
+            System.out.println(" ");
        }
     }
 }

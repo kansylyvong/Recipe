@@ -95,26 +95,30 @@ public class DBOps{
         int inactiveTime, prepTime, cookTime, totalTime, yield;
         ArrayList<String> steps;
         ArrayList<String> ingredients;
-        HashMap<Integer, String> stepsList;
-        HashMap<Integer, String> ingredientList;
+        HashMap<Integer, String> stepList = new HashMap<>();
+        HashMap<Integer, String> ingredientList = new HashMap<>();
         ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+        String[] tempSteps;
+        String[] tempIngredients;
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/recipe", "kvansylyvong", "password");
             Statement stmt = c.createStatement();
-            String prepQuery = "select r.*, s.recipe as step_fk, i.recipe as ing_fk, r.title, a.first_name, a.last_name, a.id, group_concat(concat(s.step_id, \">\", s.step_text) order by s.step_order asc SEPARATOR '|') as steps, group_concat(distinct concat(i.ingredient_id, \">\", i.ingredient_text) SEPARATOR '|') as ingredients, s.step_id, i.ingredient_id " +
+            String prepQuery = "select r.*, s.recipe as step_fk, i.recipe as ing_fk, r.title, a.first_name, a.last_name, a.id, group_concat(distinct concat(s.step_id, \">\", s.step_text, \"<\", s.step_order) order by s.step_order asc SEPARATOR '|') as steps, group_concat(distinct concat(i.ingredient_id, \">\", i.ingredient_text) SEPARATOR '|') as ingredients, s.step_id, i.ingredient_id " +
                     "from recipes as r inner join authors as a " +
                     "on r.author_fk = a.id  " +
                     "left join ingredients as i " +
                     "on r.id = i.recipe  " +
                     "right join steps as s on s.recipe = r.id  " +
-                    "where title like ? or step_text like ? " +
+                    "where i.ingredient_text like ? or r.title like ? or s.step_text like ? " +
                     "group by r.id;";
 
             PreparedStatement findRecipe = c.prepareStatement(prepQuery);
             findRecipe.setString(1,"%" + recipe_name + "%");
             findRecipe.setString(2,"%" + recipe_name + "%");
+            findRecipe.setString(3,"%" + recipe_name + "%");
+
             ResultSet rs = findRecipe.executeQuery();
             while (rs.next()) {
                 first_name = rs.getString("first_name");
@@ -127,11 +131,21 @@ public class DBOps{
                 totalTime = rs.getInt("total_time");
                 yield = rs.getInt("yield");
                 steps = new ArrayList<>(Arrays.asList(rs.getString("steps").split("\\|")));
-                ingredients = new ArrayList<>(Arrays.asList(rs.getString("ingredients").split("|")));
+                ingredients = new ArrayList<>(Arrays.asList(rs.getString("ingredients").split("\\|")));
 
                 Recipe recipe = new Recipe(first_name, last_name, title, ingredients, steps, difficulty, prepTime, inactiveTime, cookTime, yield);
                 recipe.setRecipeId(rs.getInt("id"));
                 recipe.setAuthorId(rs.getInt("author_fk"));
+               for (String step: steps) {
+                    tempSteps = step.split(">");
+                    recipe.addReturnedStep(Integer.parseInt(tempSteps[0]), tempSteps[1].replace("<", " OrderNum:"));
+                }
+                for (String ingredient: ingredients) {
+                    tempIngredients = ingredient.split(">");
+                    recipe.addReturnedIngredients(Integer.parseInt(tempIngredients[0]), tempIngredients[1]);
+                }
+
+
                 recipes.add(recipe);
 
             }
