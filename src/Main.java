@@ -40,14 +40,21 @@ public class Main {
         DBOps sample = new DBOps();
         ArrayList<Recipe> recipes = sample.searchRecipes("1");
         HashMap<Integer, String> steps = new HashMap<>();
-
+        HashMap<Integer, String> ingredients = new HashMap<>();
       for (Recipe recipe: recipes) {
             System.out.println("Recipe title: " + recipe.getTitle());
             steps = recipe.getReturnedSteps();
+            ingredients = recipe.getReturnedIngredients();
             for (HashMap.Entry<Integer, String> step: steps.entrySet()) {
                 System.out.print("Step: ");
                 System.out.print(step.getValue() + " ");
             }
+            System.out.println(" ");
+            System.out.print("Ingredient: ");
+            for (HashMap.Entry<Integer, String> ingredient: ingredients.entrySet()) {
+                System.out.print(ingredient.getValue() + " ");
+            }
+            System.out.println(" ");
             System.out.println(" ");
        }
     }
