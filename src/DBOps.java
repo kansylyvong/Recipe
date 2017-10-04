@@ -91,7 +91,7 @@ public class DBOps{
         }
     }
     //helper method for constructing returned recipes
-    public ArrayList<Recipe> constructReturnedRecipes(ResultSet rs) {
+    private ArrayList<Recipe> constructReturnedRecipes(ResultSet rs) {
         String first_name, last_name, title, difficulty;
         int inactiveTime, prepTime, cookTime, totalTime, yield;
         ArrayList<String> steps;
