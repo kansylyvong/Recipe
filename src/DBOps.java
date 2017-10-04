@@ -3,7 +3,8 @@ import java.util.*;
 
 
 public class DBOps{
-    public void insert(Recipe recipe, Connection c, Integer id) {
+    //method to insert a recipe
+    private void insert(Recipe recipe, Connection c, Integer id) {
         //insert the author first
         try {
             int authId;
