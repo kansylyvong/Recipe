@@ -165,8 +165,6 @@ public class DBOps{
         }
         return recipes;
     }
-
-
     //method to search recipe based on ingredients. Recipe must have at least the ingredients passed in
     public ArrayList<Recipe> ingredientMatch(String[] ingredients) {
         ArrayList<Recipe> recipe = new ArrayList<>();
@@ -203,6 +201,7 @@ public class DBOps{
             prepQuery += ";";
             System.out.println(prepQuery);
             PreparedStatement findRecipe = c.prepareStatement(prepQuery);
+            //Since the parameters are the same in the subquery and derived table, iterate through the ingredient list twice
             int it = 0;
             int i = 0;
             while (i < ingredients.length) {
