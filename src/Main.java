@@ -41,7 +41,7 @@ public class Main {
         ArrayList<Recipe> recipes = sample.searchRecipes("1");
         HashMap<Integer, String> steps = new HashMap<>();
         HashMap<Integer, String> ingredients = new HashMap<>();
-      for (Recipe recipe: recipes) {
+        for (Recipe recipe: recipes) {
             System.out.println("Recipe title: " + recipe.getTitle());
             steps = recipe.getReturnedSteps();
             ingredients = recipe.getReturnedIngredients();
@@ -57,5 +57,7 @@ public class Main {
             System.out.println(" ");
             System.out.println(" ");
        }
+     //String[] ingredientList = {"step1", "step2"};
+     //sample.ingredientMatch(ingredientList);
     }
 }
