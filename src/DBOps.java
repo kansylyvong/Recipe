@@ -71,10 +71,12 @@ public class DBOps{
             Class.forName("com.mysql.jdbc.Driver");
             c = DriverManager.getConnection("jdbc:mysql://localhost:3306/recipe","kvansylyvong","password");
             System.out.println("Opened database successfully");
-            stmt = c.createStatement();
             //start by searching for the author, if does not exist then add and return id, otherwise return id
-            String query = "Select * from authors where first_name = 'thomas' and last_name = 'keller';";
-            ResultSet rs = stmt.executeQuery(query);
+            String query = "Select * from authors where first_name = ? and last_name = ?;";
+            PreparedStatement ps = c.prepareStatement(query);
+            ps.setString(1, recipe.getAuthorFirst());
+            ps.setString(2, recipe.getAuthorLast());
+            ResultSet rs = ps.executeQuery();
 
             if (!rs.next()) {
                 this.insert(recipe, c, 0);
@@ -84,7 +86,6 @@ public class DBOps{
                 System.out.println("Attaching recipe to existing author");
                 this.insert(recipe, c, rs.getInt("id"));
             }
-            stmt.close();
             c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
