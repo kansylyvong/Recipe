@@ -46,23 +46,31 @@ public class View extends Application {
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn.getChildren().add(btn);
-        grid.add(hbBtn, 1, 1);
+        grid.add(hbBtn, 2, 1);
 
+        Text returnedText = new Text();
+        grid.add(returnedText, 0, 6);
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+
+                returnedText.setText("");
                 if ((searchField.getText() != null && !searchField.getText().isEmpty())) {
                    String[] searchTerms = searchField.getText().split(" ");
                     DBOps search = new DBOps();
                     ArrayList<Recipe> recipes = search.ingredientMatch(searchTerms);
-                    final Text returnedText = new Text();
                     String returnedTitles = "Titles found: \n";
-                    grid.add(returnedText, 0, 6);
-                    for (Recipe recipe: recipes) {
-                        returnedTitles += " " + recipe.getTitle() + " \n";
+                    if (recipes.size() > 0) {
+                        for (Recipe recipe : recipes) {
+                            returnedTitles += " " + recipe.getTitle() + " \n";
+                        }
+                    } else {
+                        returnedTitles += "No recipes found";
                     }
                     System.out.println(returnedTitles);
+
                     returnedText.setText(returnedTitles);
+
 
                 }
             }
