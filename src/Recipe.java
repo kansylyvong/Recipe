@@ -1,4 +1,6 @@
+
 import java.lang.reflect.Array;
+
 import java.util.*;
 
 public class Recipe {
@@ -14,7 +16,7 @@ public class Recipe {
     protected int inactiveTime;
     protected int cookTime;
     protected int totalTime;
-    protected int yield;
+    protected String yield;
     private int recipeId;
     private int authorId;
     protected ArrayList<String> categories;
@@ -22,7 +24,7 @@ public class Recipe {
     protected HashMap<Integer, String> returnedSteps = new HashMap<>();
     protected HashMap<Integer, String> returnedIngredients = new HashMap<>();
 
-    public Recipe(String author_first, String author_last, String title, ArrayList<String> ingredients, ArrayList<String> steps, String difficulty, int prepTime, int inactiveTime, int cookTime, int yield /*, ArrayList<String> categories */) {
+    public Recipe(String author_first, String author_last, String title, ArrayList<String> ingredients, ArrayList<String> steps, String difficulty, int prepTime, int inactiveTime, int cookTime, String yield /*, ArrayList<String> categories */) {
         super();
         this.authorFirstName = author_first;
         this.authorLastName = author_last;
@@ -64,7 +66,7 @@ public class Recipe {
     public int getTotalTime() {
         return this.totalTime;
     }
-    public int getYield() {
+    public String getYield() {
         return this.yield;
     }
     public ArrayList<String> getCategories() {

@@ -21,15 +21,15 @@ public class Scraper {
         ArrayList<String> ingredients = new ArrayList<>();
         Integer time = 0;
         String[] yieldArr = doc.select("div.recipe-meta-item-body").get(2).text().split(" : ");
-        Integer yield = Integer.parseInt(yieldArr[1]);
+        String yield = yieldArr[1];
         for (Element text: el) {
             ingredients.add(text.text());
         }
         ArrayList<String> steps = new ArrayList<>();
         Elements stepList = doc.select("div.step p");
-
+        //make sure text isn't empty
         for (Element step: stepList) {
-            steps.add(step.text());
+            if (!step.ownText().isEmpty()) steps.add(step.text());
         }
         Recipe recipe = new Recipe(author_first, author_last, title, ingredients, steps, difficulty, time, time, time, yield);
         return recipe;

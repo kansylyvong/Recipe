@@ -32,7 +32,7 @@ public class DBOps{
             insertRecipe.setInt(5, recipe.getInactiveTime());
             insertRecipe.setInt(6, recipe.getCookTime());
             insertRecipe.setInt(7, recipe.getTotalTime());
-            insertRecipe.setInt(8, recipe.getYield());
+            insertRecipe.setString(8, recipe.getYield());
             insertRecipe.executeUpdate();
             //return the id of the last inserted recipe
             ResultSet recipeInsertedId = insertRecipe.getGeneratedKeys();
@@ -94,8 +94,8 @@ public class DBOps{
     }
     //helper method for constructing returned recipes
     private ArrayList<Recipe> constructReturnedRecipes(ResultSet rs) {
-        String first_name, last_name, title, difficulty;
-        int inactiveTime, prepTime, cookTime, totalTime, yield;
+        String first_name, last_name, title, difficulty, yield;
+        int inactiveTime, prepTime, cookTime, totalTime;
         ArrayList<String> steps;
         ArrayList<String> ingredients;
         HashMap<Integer, String> stepList = new HashMap<>();
@@ -113,7 +113,7 @@ public class DBOps{
                 prepTime = rs.getInt("prep_time");
                 cookTime = rs.getInt("cook_time");
                 totalTime = rs.getInt("total_time");
-                yield = rs.getInt("yield");
+                yield = rs.getString("yield");
                 steps = new ArrayList<>(Arrays.asList(rs.getString("steps").split("\\|")));
                 ingredients = new ArrayList<>(Arrays.asList(rs.getString("ingredients").split("\\|")));
 
@@ -176,7 +176,7 @@ public class DBOps{
             Class.forName("com.mysql.jdbc.Driver");
             Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/recipe", "kvansylyvong", "password");
             String prepQuery = "select d.* from " +
-                    "(select r.difficulty, r.id as recipe_id, r.prep_time, r.inactive_time, r.cook_time, r.total_time, r.yield, s.recipe as step_fk, i.recipe as ing_fk, r.title, a.first_name, a.last_name, a.id as author_id, group_concat(distinct concat(s.step_id, \">\", s.step_text, \"<\", s.step_order) order by s.step_order asc SEPARATOR '|') as steps, group_concat(distinct concat(i.ingredient_id, \">\", i.ingredient_text) SEPARATOR '|') as ingredients " +
+                    "(select r.difficulty, r.id, r.author_fk, r.prep_time, r.inactive_time, r.cook_time, r.total_time, r.yield, s.recipe as step_fk, i.recipe as ing_fk, r.title, a.first_name, a.last_name, a.id as author_id, group_concat(distinct concat(s.step_id, \">\", s.step_text, \"<\", s.step_order) order by s.step_order asc SEPARATOR '|') as steps, group_concat(distinct concat(i.ingredient_id, \">\", i.ingredient_text) SEPARATOR '|') as ingredients " +
                     "from recipes as r inner join authors as a " +
                     "on r.author_fk = a.id  " +
                     "left join ingredients as i " +
