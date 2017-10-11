@@ -186,11 +186,11 @@ public class DBOps{
 
 
             for (int i=0;i<ingredients.length;i++) {
-                arrIngredients += "i.ingredient_text like ? and ";
+                arrIngredients += "i.ingredient_text like ? or ";
             }
             //remove last 'and'
 
-            arrIngredients = arrIngredients.substring(0, arrIngredients.length() - 4);
+            arrIngredients = arrIngredients.substring(0, arrIngredients.length() - 3);
             prepQuery += arrIngredients;
             prepQuery += "group by r.id) as d where ";
 
